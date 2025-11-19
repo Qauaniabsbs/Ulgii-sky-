@@ -1,0 +1,84 @@
+<!DOCTYPE html><html lang="kk">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Баян-Өлгий Ауа Райы — Ең Дәл Ақпарат</title>
+  <meta name="description" content="Баян-Өлгий аймағына арналған ең дәл ауа райы, ескертулер, болжамдар. Деректер әр 2 сағат сайын жаңарады." />
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      color: white;
+      overflow: hidden;
+    }
+    #bg {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-image: url('https://upload.wikimedia.org/wikipedia/commons/e/ea/Van_Gogh_-_Starry_Night_-_Google_Art_Project.jpg');
+      background-size: cover;
+      background-position: center;
+      filter: brightness(0.55);
+      z-index: -1;
+    }
+    .container {
+      padding: 20px;
+      max-width: 600px;
+      margin: auto;
+      background: rgba(0,0,0,0.45);
+      border-radius: 18px;
+      margin-top: 40px;
+      backdrop-filter: blur(6px);
+    }
+    h1 {
+      text-align: center;
+      font-size: 28px;
+      margin-bottom: 10px;
+    }
+    #weather {
+      font-size: 18px;
+      line-height: 1.6;
+    }
+    .updated {
+      font-size: 14px;
+      opacity: 0.7;
+      margin-top: 10px;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <div id="bg"></div>  <div class="container">
+    <h1>Баян-Өлгий — Ауа Райы</h1>
+    <div id="weather">Жүктелуде...</div>
+    <div class="updated" id="updated"></div>
+  </div>  <script>
+    async function loadWeather() {
+      const apiUrl = "https://api.open-meteo.com/v1/forecast?latitude=48.968&longitude=89.964&current_weather=true&hourly=temperature_2m,wind_speed_10m";
+
+      try {
+        const res = await fetch(apiUrl);
+        const data = await res.json();
+
+        const temp = data.current_weather.temperature;
+        const wind = data.current_weather.windspeed;
+        const time = new Date(data.current_weather.time).toLocaleString('kk-KZ');
+
+        document.getElementById("weather").innerHTML = `
+          🌡 Температура: <b>${temp}°C</b><br>
+          💨 Жел жылдамдығы: <b>${wind} м/с</b><br>
+          ⏱ Жаңарған уақыты: ${time}
+        `;
+
+        document.getElementById("updated").innerText = "Деректер әр 2 сағат сайын автоматты түрде жаңарады";
+      } catch (err) {
+        document.getElementById("weather").innerText = "Қате: Ауа райы жүктелмеді.";
+      }
+    }
+
+    loadWeather();
+    setInterval(loadWeather, 7200000); // 2 hours
+  </script></body>
+  </html>
